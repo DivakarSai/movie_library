@@ -102,6 +102,12 @@ try {
     const response = await fetch(url);
     const data = await response.json();
 
+    //if the movie details are already displayed, remove them
+    const movieCard = document.getElementById(imdbId);
+    if (movieCard.lastChild) {
+        movieCard.removeChild(movieCard.lastChild);
+    }
+    
 
 //create a new div element with all the additional movie details and an option to rate out of 5
 const movieDetails = document.createElement('div');
@@ -159,7 +165,6 @@ movieDetails.innerHTML += `<p><button onclick="closeMovieDetails('${imdbId}')">C
 
 
 //append the new div element to the movie card
-const movieCard = document.getElementById(imdbId);
 movieCard.appendChild(movieDetails);
 
 } catch (error) {
