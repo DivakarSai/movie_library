@@ -141,6 +141,18 @@ if (localStorage.getItem(imdbId)) {
     <button onclick="rateMovie('${imdbId}')">Rate</button>`;
 }
 
+//add a button to add comments to the movie
+movieDetails.innerHTML += `<p><button onclick="addComment('${imdbId}')">Add comment</button></p>`;
+
+//show all the comments for the movie
+const comments = localStorage.getItem(imdbId + 'comments');
+if (comments) {
+    movieDetails.innerHTML += `<p>Comments:</p><p>${comments}</p>`;
+}
+
+
+
+
 //add a button to close the movie details
 movieDetails.innerHTML += `<p><button onclick="closeMovieDetails('${imdbId}')">Close</button></p>`;
 
@@ -171,3 +183,20 @@ function closeMovieDetails(imdbId) {
     const movieCard = document.getElementById(imdbId);
     movieCard.removeChild(movieCard.lastChild);
 }
+
+//create a function to add comments to the movie and store them in local storage
+function addComment(imdbId) {
+    const comment = prompt('Enter your comment:');
+    if (comment) {
+        const comments = localStorage.getItem(imdbId + 'comments');
+        if (comments) {
+            localStorage.setItem(imdbId + 'comments', comments + '\n' + comment);
+        } else {
+            localStorage.setItem(imdbId + 'comments', comment);
+        }
+        closeMovieDetails(imdbId);
+        fetchMovieDetails(imdbId);
+    }
+}
+
+
