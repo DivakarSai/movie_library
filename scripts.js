@@ -101,7 +101,9 @@ const url = `https://www.omdbapi.com/?apikey=${apiKey}&i=${imdbId}`;
 try {
     const response = await fetch(url);
     const data = await response.json();
-//create a new div element with all the additional movie details
+
+
+//create a new div element with all the additional movie details and an option to rate out of 5
 const movieDetails = document.createElement('div');
 movieDetails.innerHTML = `<p>Rated: ${data.Rated}</p>
 <p>Released: ${data.Released}</p>
@@ -125,6 +127,25 @@ movieDetails.innerHTML = `<p>Rated: ${data.Rated}</p>
 <p>Website: ${data.Website}</p>
 <p>Response: ${data.Response}</p>`;
 
+//if the movie has already been rated, display the rating and an option to change it else display an option to rate the movie
+if (localStorage.getItem(imdbId)) {
+    const rating = localStorage.getItem(imdbId);
+    movieDetails.innerHTML += `<p id ="your_rating${imdbId}">Your rating: ${rating}</p>
+    <label for="rating">Change your rating out of 5:</label>
+    <input type="number" id="rating${imdbId}" name="rating" min="1" max="5">
+    <button onclick="rateMovie('${imdbId}')">Rate</button>`;
+} else {
+    movieDetails.innerHTML += `<p id ="your_rating${imdbId}">You have not rated this movie yet.</p>
+    <label for="rating">Rate this movie out of 5:</label>
+    <input type="number" id="rating${imdbId}" name="rating" min="1" max="5">
+    <button onclick="rateMovie('${imdbId}')">Rate</button>`;
+}
+
+//add a button to close the movie details
+movieDetails.innerHTML += `<p><button onclick="closeMovieDetails('${imdbId}')">Close</button></p>`;
+
+
+
 //append the new div element to the movie card
 const movieCard = document.getElementById(imdbId);
 movieCard.appendChild(movieDetails);
@@ -132,4 +153,21 @@ movieCard.appendChild(movieDetails);
 } catch (error) {
     console.error('Error fetching movie details:', error);
 }
+}
+
+//create a function to rate the movie out of 5 and add the rating to the movie card and store it in local storage
+function rateMovie(imdbId) {
+
+    const rating = document.getElementById('rating' + imdbId).value;
+
+
+    const yourRating = document.getElementById('your_rating' + imdbId);
+    yourRating.innerHTML = `Your rating: ${rating}`;
+    localStorage.setItem(imdbId, rating);
+}
+
+//create a function to close the movie details
+function closeMovieDetails(imdbId) {
+    const movieCard = document.getElementById(imdbId);
+    movieCard.removeChild(movieCard.lastChild);
 }
